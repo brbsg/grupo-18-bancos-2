@@ -1,0 +1,7 @@
+pyspark
+pandas
+matplotlib
+seaborn
+scikit-learn
+jupyterlab
+pyarrow
