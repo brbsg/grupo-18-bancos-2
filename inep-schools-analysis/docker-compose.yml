@@ -1,0 +1,39 @@
+services:
+  db:
+    build:
+      context: .
+      dockerfile: ./postgres/Dockerfile
+    container_name: inep-db
+    environment:
+      - POSTGRES_USER=inep
+      - POSTGRES_PASSWORD=inep
+      - POSTGRES_DB=inep_db
+    ports:
+      - "5432:5432"
+#    volumes:
+#      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U inep -d inep_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  etl:
+    build:
+      context: .
+      dockerfile: ./etl/Dockerfile
+    container_name: inep-etl
+    volumes:
+      - ./raw:/app/raw
+      - ./processed:/app/processed
+    environment:
+      - POSTGRES_USER=inep
+      - POSTGRES_PASSWORD=inep
+      - POSTGRES_DB=inep_db
+      - DB_HOST=db
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
