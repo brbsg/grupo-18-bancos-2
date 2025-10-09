@@ -12,17 +12,20 @@ Este projeto realiza uma análise exploratória completa dos dados de escolas br
 
 O projeto segue o padrão **Medallion Architecture**:
 
-### Bronze Layer (`raw/`)
+### Bronze Layer (`bronze/`)
 - **Dados brutos**: `escolas_inep.csv` - Catálogo completo de escolas do INEP
-- **Ingestão**: `ingestao.ipynb` - Carregamento e conversão para Parquet
+- **Dicionário de Dados**: - Dicionário dos dados brutos no CSV
+- **Análise Bruta**: - Gráficos com a análise dos dados brutos do CSV
 
-### Silver Layer (`processed/`)
-- **Tratamento**: `tratamento.ipynb` - Limpeza, padronização e criação de colunas derivadas
-- **Dados tratados**: `escolas_silver.parquet` - Dataset limpo e estruturado
+### Transform Layer (`transform/`)
+- **Tratamento**: `tratamento.ipynb` - Limpeza, padronização e criação de colunas derivadas e envio para o banco de dados postgres
 
-### Gold Layer (`curated/`)
-- **Análise**: `analise.ipynb` - Visualizações e insights profissionais
-- **Relatórios**: Gráficos e análises estatísticas
+### Silver Layer
+- **MER, DER, DLD**: - Modelagem dos dados tratados
+- **Dados tratados**: - Dataset limpo e estruturado
+
+### Gold Layer (`gold/`)
+- **A fazer**
 
 ## 📊 Tipos de Análises Realizadas
 
@@ -51,9 +54,9 @@ pip install -r requirements.txt
 ```
 
 ### Execução Sequencial
-1. **Bronze**: Execute `raw/ingestao.ipynb` para carregar os dados brutos
-2. **Silver**: Execute `processed/tratamento.ipynb` para tratar e limpar os dados
-3. **Gold**: Execute `curated/analise.ipynb` para gerar as visualizações
+1. **Bronze**: Execute `bronze/ingestao.ipynb` para carregar os dados brutos
+2. **Transform**: Execute `transform/tratamento.ipynb` para tratar os dados e enviar para o banco de dados postgres 
+3. **Silver**: MER, DER, DLD e análise dos dados tratados comparados com os dados brutos
 
 ## 📈 Principais Insights
 
@@ -79,21 +82,4 @@ pip install -r requirements.txt
 - **Matplotlib/Seaborn**: Visualizações
 - **Scikit-learn**: Análises estatísticas
 - **Jupyter**: Ambiente de desenvolvimento
-
-## 📁 Estrutura do Projeto
-
-```
-inep-schools-analysis/
-├── raw/
-│   ├── escolas_inep.csv
-│   ├── ingestao.ipynb
-│   └── bronze_escolas.parquet
-├── processed/
-│   ├── tratamento.ipynb
-│   └── escolas_silver.parquet
-├── curated/
-│   └── analise.ipynb
-├── requirements.txt
-└── README.md
-```
 
