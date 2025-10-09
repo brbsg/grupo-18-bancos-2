@@ -1,8 +1,6 @@
 services:
   db:
-    build:
-      context: .
-      dockerfile: ./postgres/Dockerfile
+    image: postgres:15
     container_name: inep-db
     environment:
       - POSTGRES_USER=inep
