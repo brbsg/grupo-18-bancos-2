@@ -19,16 +19,21 @@ services:
   etl:
     build:
       context: .
-      dockerfile: ./etl/Dockerfile
+      dockerfile: transform/etl/Dockerfile
     container_name: inep-etl
+    working_dir: /app
     volumes:
-      - ./raw:/app/raw
-      - ./processed:/app/processed
+      - .:/app
     environment:
       - POSTGRES_USER=inep
       - POSTGRES_PASSWORD=inep
       - POSTGRES_DB=inep_db
-      - DB_HOST=db
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
+      - SILVER_PARQUET_PATH=/app/processed/escolas_silver.parquet
+      - BRONZE_DATA_PATH=/app/bronze/escolas_inep.csv
+      - PROJECT_ROOT=/app
+      - PIPELINE_NOTEBOOKS=transform/tratamento.ipynb
     depends_on:
       db:
         condition: service_healthy
