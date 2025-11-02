@@ -32,7 +32,7 @@ def _load_notebook_sequence() -> List[Path]:
         ]
     else:
         notebook_entries = [
-            os.getenv("TRANSFORM_NOTEBOOK", "transform/tratamento.ipynb")
+            os.getenv("TRANSFORM_NOTEBOOK", "transformer/tratamento.ipynb")
         ]
 
     notebooks: List[Path] = []
