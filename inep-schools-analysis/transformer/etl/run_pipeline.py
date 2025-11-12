@@ -32,7 +32,8 @@ def _load_notebook_sequence() -> List[Path]:
         ]
     else:
         notebook_entries = [
-            os.getenv("TRANSFORM_NOTEBOOK", "transformer/tratamento.ipynb")
+            "transformer/tratamento.ipynb",
+            "transformer/silver_to_gold.ipynb"
         ]
 
     notebooks: List[Path] = []
@@ -54,4 +55,7 @@ def _execute_notebooks(notebooks: Iterable[Path]) -> None:
 
 # Execute notebooks
 notebooks_to_run = _load_notebook_sequence()
+
+print(f"Notebooks to run: {notebooks_to_run}")
+
 _execute_notebooks(notebooks_to_run)

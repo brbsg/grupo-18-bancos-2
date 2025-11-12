@@ -16,4 +16,4 @@ COPY . /app
 
 ENV PROJECT_ROOT=/app
 
-CMD ["python3", "transformer/etl/run_pipeline.py"]
+CMD ["python3", "/app/transformer/etl/run_pipeline.py"]

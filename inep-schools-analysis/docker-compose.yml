@@ -8,8 +8,8 @@ services:
       - POSTGRES_DB=inep_db
     ports:
       - "5432:5432"
-#    volumes:
-#      - postgres_data:/var/lib/postgresql/data
+    volumes:
+      - ./data-layer/gold/DDL.sql:/docker-entrypoint-initdb.d/DDL.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U inep -d inep_db"]
       interval: 5s
@@ -33,7 +33,6 @@ services:
       - SILVER_PARQUET_PATH=/app/processed/escolas_silver.parquet
       - BRONZE_DATA_PATH=/app/data-layer/bronze/escolas_inep.csv
       - PROJECT_ROOT=/app
-      - PIPELINE_NOTEBOOKS=transformer/tratamento.ipynb
     depends_on:
       db:
         condition: service_healthy
