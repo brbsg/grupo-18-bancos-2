@@ -1,51 +1,51 @@
 SELECT 
-    d.regiao,
-    dep.dependencia_adm,
-    COUNT(f.sk_escola) AS total_escolas
-FROM dw.fato_escola f
-JOIN dw.dim_localidade d ON f.sk_localidade = d.sk_localidade
-JOIN dw.dim_dependencia dep ON f.sk_dependencia = dep.sk_dependencia
-GROUP BY d.regiao, dep.dependencia_adm
-ORDER BY d.regiao, total_escolas DESC;
+    d.reg,
+    dep.dpd_adm,
+    COUNT(f.srk_esc) AS tot_esc
+FROM dw.fat_esc f
+JOIN dw.dim_loc d ON f.srk_loc = d.srk_loc
+JOIN dw.dim_dpd dep ON f.srk_dpd = dep.srk_dpd
+GROUP BY d.reg, dep.dpd_adm
+ORDER BY d.reg, tot_esc DESC;
 
 SELECT 
     l.uf,
-    r.restricao_desc,
-    ROUND(AVG(p.porte_numerico), 2) AS porte_medio,
-    COUNT(f.sk_escola) AS total_escolas
-FROM dw.fato_escola f
-JOIN dw.dim_localidade l ON f.sk_localidade = l.sk_localidade
-JOIN dw.dim_porte p ON f.sk_porte = p.sk_porte
-JOIN dw.dim_restricao_atendimento r ON f.sk_restricao = r.sk_restricao
-GROUP BY l.uf, r.restricao_desc
-ORDER BY l.uf, porte_medio DESC;
+    r.rst_desc,
+    ROUND(AVG(p.prt_num), 2) AS prt_med,
+    COUNT(f.srk_esc) AS tot_esc
+FROM dw.fat_esc f
+JOIN dw.dim_loc l ON f.srk_loc = l.srk_loc
+JOIN dw.dim_prt p ON f.srk_prt = p.srk_prt
+JOIN dw.dim_rst_atn r ON f.srk_rst = r.srk_rst
+GROUP BY l.uf, r.rst_desc
+ORDER BY l.uf, prt_med DESC;
 
-WITH etapas_por_escola AS (
+WITH etapas_por_esc AS (
     SELECT 
-        b.sk_escola,
-        COUNT(DISTINCT e.etapa) AS qtd_etapas
-    FROM dw.bridge_escola_etapa b
-    JOIN dw.dim_etapa e ON b.sk_etapa = e.sk_etapa
-    GROUP BY b.sk_escola
+        b.srk_esc,
+        COUNT(DISTINCT e.etp) AS qtd_etp
+    FROM dw.bridge_esc_etp b
+    JOIN dw.dim_etp e ON b.srk_etp = e.srk_etp
+    GROUP BY b.srk_esc
 ),
 
-resumo_dependencia_regiao AS (
+res_dpd_reg AS (
     SELECT 
-        l.regiao,
-        d.dependencia_adm,
-        ROUND(AVG(ep.qtd_etapas), 2) AS media_etapas_por_escola,
-        COUNT(DISTINCT f.sk_escola) AS total_escolas
-    FROM dw.fato_escola f
-    JOIN dw.dim_localidade l ON f.sk_localidade = l.sk_localidade
-    JOIN dw.dim_dependencia d ON f.sk_dependencia = d.sk_dependencia
-    JOIN etapas_por_escola ep ON ep.sk_escola = f.sk_escola
-    GROUP BY l.regiao, d.dependencia_adm
+        l.reg,
+        d.dpd_adm,
+        ROUND(AVG(ep.qtd_etp), 2) AS med_etp_por_esc,
+        COUNT(DISTINCT f.srk_esc) AS tot_esc
+    FROM dw.fat_esc f
+    JOIN dw.dim_loc l ON f.srk_loc = l.srk_loc
+    JOIN dw.dim_dpd d ON f.srk_dpd = d.srk_dpd
+    JOIN etapas_por_esc ep ON ep.srk_esc = f.srk_esc
+    GROUP BY l.reg, d.dpd_adm
 )
 
 SELECT 
-    regiao,
-    dependencia_adm,
-    media_etapas_por_escola,
-    total_escolas
-FROM resumo_dependencia_regiao
-ORDER BY regiao, media_etapas_por_escola DESC;
+    reg,
+    dpd_adm,
+    med_etp_por_esc,
+    tot_esc
+FROM res_dpd_reg
+ORDER BY reg, med_etp_por_esc DESC;
