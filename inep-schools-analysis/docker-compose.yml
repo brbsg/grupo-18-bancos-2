@@ -9,7 +9,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./data-layer/gold/DDL.sql:/docker-entrypoint-initdb.d/DDL.sql:ro
+      - ./Data Layer/gold/ddl.sql:/docker-entrypoint-initdb.d/ddl.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U inep -d inep_db"]
       interval: 5s
@@ -19,7 +19,7 @@ services:
   etl:
     build:
       context: .
-      dockerfile: transformer/etl/Dockerfile
+      dockerfile: Dockerfile
     container_name: inep-etl
     working_dir: /app
     volumes:
@@ -31,7 +31,7 @@ services:
       - POSTGRES_HOST=db
       - POSTGRES_PORT=5432
       - SILVER_PARQUET_PATH=/app/processed/escolas_silver.parquet
-      - BRONZE_DATA_PATH=/app/data-layer/bronze/escolas_inep.csv
+      - BRONZE_DATA_PATH=/app/Data Layer/raw/dados_brutos.csv
       - PROJECT_ROOT=/app
     depends_on:
       db:

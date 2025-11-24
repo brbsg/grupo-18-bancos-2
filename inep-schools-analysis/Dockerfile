@@ -12,7 +12,7 @@ WORKDIR /app
 COPY transformer/etl/requirements.txt /tmp/requirements.txt
 RUN pip install --no-cache-dir -r /tmp/requirements.txt
 
-COPY . /app
+COPY Transformer/etl /app
 
 ENV PROJECT_ROOT=/app
 

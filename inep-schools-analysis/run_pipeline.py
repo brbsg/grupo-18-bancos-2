@@ -32,8 +32,8 @@ def _load_notebook_sequence() -> List[Path]:
         ]
     else:
         notebook_entries = [
-            "transformer/tratamento.ipynb",
-            "transformer/silver_to_gold.ipynb"
+            "Transformer/etl_raw_to_silver.ipynb",
+            "Transformer/etl_silver_to_gold.ipynb"
         ]
 
     notebooks: List[Path] = []
