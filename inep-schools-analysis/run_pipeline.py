@@ -7,9 +7,7 @@ import psycopg2
 from psycopg2 import sql
 
 
-PROJECT_ROOT = Path(
-    os.getenv("PROJECT_ROOT", Path(__file__).resolve().parents[2])
-).resolve()
+PROJECT_ROOT = Path(".").resolve()
 NOTEBOOK_ARTIFACT_DIR = Path(
     os.getenv("PIPELINE_NOTEBOOK_OUTPUT_DIR", "/tmp/pipeline-notebooks")
 )

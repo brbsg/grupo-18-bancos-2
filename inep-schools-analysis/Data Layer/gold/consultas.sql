@@ -4,7 +4,7 @@
 SELECT 
     d.reg,
     dep.dpd_adm,
-    COUNT(f.srk_esc) AS tot_esc
+    COUNT(f.cod_inep) AS tot_esc
 FROM dw.fat_esc f
 JOIN dw.dim_loc d ON f.srk_loc = d.srk_loc
 JOIN dw.dim_dpd dep ON f.srk_dpd = dep.srk_dpd
@@ -18,7 +18,7 @@ SELECT
     l.uf,
     r.rst_desc,
     ROUND(AVG(p.prt_num), 2) AS prt_med,
-    COUNT(f.srk_esc) AS tot_esc
+    COUNT(f.cod_inep) AS tot_esc
 FROM dw.fat_esc f
 JOIN dw.dim_loc l ON f.srk_loc = l.srk_loc
 JOIN dw.dim_prt p ON f.srk_prt = p.srk_prt
@@ -42,11 +42,11 @@ res_dpd_reg AS (
         l.reg,
         d.dpd_adm,
         ROUND(AVG(ep.qtd_etp), 2) AS med_etp_por_esc,
-        COUNT(DISTINCT f.srk_esc) AS tot_esc
+        COUNT(DISTINCT f.cod_inep) AS tot_esc
     FROM dw.fat_esc f
     JOIN dw.dim_loc l ON f.srk_loc = l.srk_loc
     JOIN dw.dim_dpd d ON f.srk_dpd = d.srk_dpd
-    JOIN etapas_por_esc ep ON ep.srk_esc = f.srk_esc
+    JOIN etapas_por_esc ep ON ep.srk_esc = f.cod_inep
     GROUP BY l.reg, d.dpd_adm
 )
 SELECT 
@@ -109,7 +109,7 @@ SELECT
     l.uf,
     ROUND(AVG(ep.qtd_etapas), 2) AS media_etapas
 FROM dw.fat_esc f
-JOIN ep ON ep.srk_esc = f.srk_esc
+JOIN ep ON ep.srk_esc = f.cod_inep
 JOIN dw.dim_loc l ON f.srk_loc = l.srk_loc
 GROUP BY l.uf
 ORDER BY media_etapas DESC;
@@ -154,7 +154,7 @@ SELECT
     p.prt_esc,
     ROUND(AVG(et.qtd_etp), 2) AS media_etapas
 FROM dw.fat_esc f
-JOIN etapas et ON et.srk_esc = f.srk_esc
+JOIN etapas et ON et.srk_esc = f.cod_inep
 JOIN dw.dim_prt p ON f.srk_prt = p.srk_prt
 GROUP BY p.prt_esc
 ORDER BY media_etapas DESC;

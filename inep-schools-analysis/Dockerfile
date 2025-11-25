@@ -9,11 +9,11 @@ RUN apt-get update && \
 
 WORKDIR /app
 
-COPY transformer/etl/requirements.txt /tmp/requirements.txt
+COPY requirements.txt /tmp/requirements.txt
 RUN pip install --no-cache-dir -r /tmp/requirements.txt
 
-COPY Transformer/etl /app
+COPY run_pipeline.py /app/run_pipeline.py
 
 ENV PROJECT_ROOT=/app
 
-CMD ["python3", "/app/transformer/etl/run_pipeline.py"]
+CMD ["python3", "/app/run_pipeline.py"]
