@@ -2,6 +2,9 @@
 -- Schema
 -- =========================================================
 create schema if not exists dw;
+GRANT USAGE ON SCHEMA dw TO inep;
+ALTER SCHEMA dw OWNER TO pg_database_owner;
+
 
 -- =========================================================
 -- Idempotência (drop em ordem de dependência)
@@ -19,16 +22,6 @@ drop table if exists dw.dim_esc cascade;
 -- =========================================================
 -- DIMENSÕES
 -- =========================================================
-
--- Escola (SCD1)
-create table dw.dim_esc (
-  srk_esc     integer generated always as identity primary key,
-  cod_inep    text not null unique,
-  nom_esc     text not null
-);
-
-comment on table dw.dim_esc is 'Dimensão de escolas (cadastro estático).';
-comment on column dw.dim_esc.cod_inep is 'Código INEP original (chave natural).';
 
 -- Localidade (SCD1)
 create table dw.dim_loc (
@@ -87,13 +80,14 @@ comment on table dw.dim_etp is 'Dimensão de etapa/modalidade de ensino.';
 -- FATO (1 linha por escola)
 -- =========================================================
 create table dw.fat_esc (
-  srk_esc    integer not null references dw.dim_esc(srk_esc),
   srk_loc    integer not null references dw.dim_loc(srk_loc),
   srk_dpd    integer not null references dw.dim_dpd(srk_dpd),
   srk_prt    integer references dw.dim_prt(srk_prt),
   srk_rst    integer references dw.dim_rst_atn(srk_rst),
+  cod_inep    text not null unique,
+  nom_esc     text not null,
 
-  constraint pk_fat_esc primary key (srk_esc)
+  constraint pk_fat_esc primary key (cod_inep)
 );
 
 comment on table dw.fat_esc is 'Fato com 1 linha por escola (snapshot estático).';
@@ -102,7 +96,7 @@ comment on table dw.fat_esc is 'Fato com 1 linha por escola (snapshot estático)
 -- BRIDGE N:N (Escola × Etapas)
 -- =========================================================
 create table dw.bridge_esc_etp (
-  srk_esc integer not null references dw.dim_esc(srk_esc) on delete cascade,
+  srk_esc text not null references dw.fat_esc(cod_inep) on delete cascade,
   srk_etp integer not null references dw.dim_etp(srk_etp),
   constraint pk_bridge_esc_etp primary key (srk_esc, srk_etp)
 );

@@ -9,7 +9,8 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./Data Layer/gold/ddl.sql:/docker-entrypoint-initdb.d/ddl.sql:ro
+      - ./Data Layer/silver/ddl.sql:/docker-entrypoint-initdb.d/1_silver.sql:ro
+      - ./Data Layer/gold/ddl.sql:/docker-entrypoint-initdb.d/2_gold.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U inep -d inep_db"]
       interval: 5s
